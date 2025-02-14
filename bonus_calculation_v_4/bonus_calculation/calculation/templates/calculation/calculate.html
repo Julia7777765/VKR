@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Расчет премии</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            text-align: left;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+        }
+        .header .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-right: 20px;
+            padding-right: 20px;
+            border-right: 2px solid #555;
+        }
+        .header .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .header a:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            gap: 20px;
+            margin-top: 60px;
+            flex-grow: 1;
+            padding: 20px;
+            align-items: center;
+        }
+        .sidebar {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .sidebar .salary {
+            color: #777;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: calc(100vh - 100px);
+        }
+        .premium-calculation {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .premium-calculation h1 {
+            margin-top: 0;
+            color: #333;
+        }
+        .period-selection {
+            margin-bottom: 20px;
+        }
+        .period-selection label {
+            color: #777;
+            font-size: 14px;
+        }
+        .period-selection select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+        }
+        .form-group .checkbox-label {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .form-actions button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-actions button:hover {
+            background-color: #218838;
+        }
+        .premium-result {
+            color: green;
+            font-weight: bold;
+        }
+        .calculation-details {
+            margin-top: 20px;
+        }
+        .calculation-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="title">Мои доходы и льготы</span>
+        <div class="nav-links">
+            <a href="#">На главную</a>
+            <a href="#">Мои доходы</a>
+            <a href="#">Мои налоги</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Мои условия</h2>
+            <div class="salary">оклад в месяц</div>
+            <div>100 000р</div>
+        </div>
+        <div class="main-content">
+            <div class="premium-calculation">
+                <h1>Расчет премии</h1>
+                <div class="period-selection">
+                    <label for="year">Год:</label>
+                    <select id="year" onchange="updatePeriod()">
+                        <option value="2023" {% if selected_year == 2023 %}selected{% endif %}>2023</option>
+                        <option value="2024" {% if selected_year == 2024 %}selected{% endif %}>2024</option>
+                    </select>
+                    <label for="quarter">Квартал:</label>
+                    <select id="quarter" onchange="updatePeriod()">
+                        <option value="1 квартал" {% if selected_quarter == "1 квартал" %}selected{% endif %}>1 квартал</option>
+                        <option value="2 квартал" {% if selected_quarter == "2 квартал" %}selected{% endif %}>2 квартал</option>
+                        <option value="3 квартал" {% if selected_quarter == "3 квартал" %}selected{% endif %}>3 квартал</option>
+                        <option value="4 квартал" {% if selected_quarter == "4 квартал" %}selected{% endif %}>4 квартал</option>
+                    </select>
+                </div>
+                {% if calculation %}
+                    <div class="calculation-details">
+                        <h3><i>Просьба обратить внимание, что расчет предсказания вознаграждения может отличаться от фактических выплат</i></h3>
+                        <h2>Расчет за {{ calculation.quarter }} {{ calculation.year }}</h2>
+                        <p><strong>Число продаж страхований авто:</strong> {{ calculation.car_insurance_sales }}</p>
+                        <p><strong>Число продаж страхований имущества:</strong> {{ calculation.property_insurance_sales }}</p>
+                        <p><strong>Оценка выполненной работы руководителем:</strong> {{ calculation.manager_evaluation }}</p>
+                        <p><strong>Факт выполнения плана:</strong> {{ calculation.plan_completion }}</p>
+                        <p><strong>Число дней больничного:</strong> {{ calculation.sick_days }}</p>
+                        <p><strong>Отпуск (дни):</strong> {{ calculation.vacation_days }}</p>
+                        <p class="premium-result"><strong>Премия:</strong> {{ calculation.premium }}р</p>
+                    </div>
+                {% else %}
+                    <form method="post" id="calculationForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="year" id="hiddenYear" value="{{ selected_year }}">
+                    <input type="hidden" name="quarter" id="hiddenQuarter" value="{{ selected_quarter }}">
+                    <div class="form-group">
+                        <label for="id_car_insurance_sales">Число продаж страхований авто:</label>
+                        {{ form.car_insurance_sales }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_property_insurance_sales">Число продаж страхований имущества:</label>
+                        {{ form.property_insurance_sales }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_manager_evaluation">Оценка выполненной работы руководителем:</label>
+                        {{ form.manager_evaluation }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_plan_completion">Факт выполнения плана:</label>
+                        {{ form.plan_completion }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_sick_days">Число дней больничного:</label>
+                        {{ form.sick_days }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_vacation_days">Отпуск (дни):</label>
+                        {{ form.vacation_days }}
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Рассчитать</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        function updatePeriod() {
+            const year = document.getElementById('year').value;
+            const quarter = document.getElementById('quarter').value;
+            // Перенаправляем на страницу с новыми параметрами
+            window.location.href = `/calculate/?year=${year}&quarter=${quarter}`;
+        }
+
+        // Обновляем скрытые поля перед отправкой формы
+        document.getElementById('calculationForm').addEventListener('submit', function() {
+            const year = document.getElementById('year').value;
+            const quarter = document.getElementById('quarter').value;
+            document.getElementById('hiddenYear').value = year;
+            document.getElementById('hiddenQuarter').value = quarter;
+        });
+    </script>
+</body>
+</html>

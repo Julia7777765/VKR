@@ -1,0 +1,6 @@
+django
+joblib
+pandas
+faker
+scikit-learn
+xgboost
